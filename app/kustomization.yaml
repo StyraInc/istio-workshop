@@ -1,0 +1,6 @@
+resources:
+  - bookinfo.yaml
+patches:
+  - path: opa-container.yaml
+    target:
+      kind: Deployment

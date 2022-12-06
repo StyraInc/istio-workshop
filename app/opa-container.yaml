@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews-v1
+spec:
+  template:
+    spec:
+      containers:
+        - name: opa
+          image: openpolicyagent/opa:0.45.0-envoy-1-rootless
+          volumeMounts:
+            - readOnly: true
+              mountPath: /config
+              name: opa-config-vol
+          livenessProbe:
+            httpGet:
+              path: /health
+              scheme: HTTP
+              port: 8282
+            initialDelaySeconds: 5      # Tune these periods for your environemnt
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health?bundle=true  # Include bundle activation in readiness
+              scheme: HTTP
+              port: 8282
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          env:
+            - name: OPA_LOG_TIMESTAMP_FORMAT
+              value: "2006-01-02T15:04:05.999999999Z07:00"
+          args:
+            - "run"
+            - "--server"
+            - "--ignore=.*"
+            - "--config-file=/config/conf.yaml"
+            - "--authorization=basic"
+            - "--addr=http://127.0.0.1:8181"
+            - "--diagnostic-addr=0.0.0.0:8282"
+      volumes:
+        - name: opa-config-vol
+          configMap:
+            name: opa-istio-config
