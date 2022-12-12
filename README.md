@@ -5,4 +5,4 @@ Owners
 - Greg Brown
 
 Contains
-- Istio Bookinfo app + kustomization to add OPA to every deployment
+- Stripped down version of Banking Demo application

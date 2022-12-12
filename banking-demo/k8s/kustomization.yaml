@@ -1,0 +1,12 @@
+resources:
+  - envoyfilter.yaml
+  - gateway.yaml
+  - account-deploy.yaml
+  - accountholder-deploy.yaml
+  - portal-deploy.yaml
+  - entitlements-deploy.yaml
+patches:
+  - path: opa-container.yaml
+    target:
+      kind: Deployment
+namespace: default

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reviews-v1
+  name: deployment
 spec:
   template:
     spec:
