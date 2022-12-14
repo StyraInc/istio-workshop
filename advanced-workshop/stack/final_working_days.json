@@ -1,0 +1,29 @@
+{
+    "agent_brown": {
+        "workDays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+        ]
+    },
+    "agent_jones": {
+        "workDays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+        ]
+    },
+    "agent_smith": {
+        "workDays": [
+            "Tuesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ]
+    }
+}
