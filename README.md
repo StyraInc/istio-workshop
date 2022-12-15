@@ -28,6 +28,10 @@ Steps:
 2. In the `Getting Started` screen select `Take a tutorial` and then `Lets get started`.
 3. Select `Istio Policy Enforcement with OPA` and `Continue`.
 4. The `Quick Start` wizard will appear on the right hand side and we'll follow these steps to complete this lab.
+5. IMPORTANT: 
+- Select the `Istio and OPA without SLP` instructions tab
+- Name the system on step 1 `Workshop`
+- DON'T deploy the sample Bookinfo application as we'll be using a different application.
 
 ---  
 
@@ -51,11 +55,12 @@ kubectl delete deployments example-app
 1. Create a new `Istio` system type called `Banking App` and hit `Create system`.  
 2. Deploy the new OPA config
 ```
-# Copy the OPA download script from Banking App | Settings | Install | Create OPA config
-# Script downloads opaconfig.yaml and applies to the K8s cluster.
+# Copy the OPA download script from Banking App | Settings | Install | Istio and OPA without SLP | Create OPA config
+# The script downloads opaconfig.yaml and applies to the K8s cluster.
 ```  
 3. Deploy the banking application  
 ```
+# Navigate to the istio-workshop git Repo
 kubectl apply -k banking-demo/k8s
 ```
 4. Check all pods are up and running  
@@ -184,7 +189,10 @@ You should see there are changes as would be expected.  Select the change and dr
 
 - Publish the draft by selecting `Publish`
 
-- Confirm the Banking App UI now returns an HTTP 403 and message when select the US account.
+- Confirm the Banking App UI now returns an error message when select the US account.
+```
+"geo region of customer support employee (EU) doesn't match account's (US)"
+```
 
 7. Enhance policy/app/rule.rego policy
 
@@ -211,12 +219,13 @@ transaction_filter["result"] = "FAILURE" {
     input.subject.role_level <= 2
 }
 ```
+
+- `Preview / Validate` the changes and then select `Publish`
+
 This will restrict access to:
 - Only employees that have the `customer_support` role.
 - Have a role level higher than 2
 - Transactions restricted to `Failed` where employees have a role level <= 2
-
-- `Preview / Validate` the changes and then select `Publish`
 
 8. At this point we have the App level policy implemented
 
@@ -232,6 +241,11 @@ password: 1234agentjones
 ```  
 
 You should find the outcome as follows:  
+
+Agent Smith:  
+- Is allowed to see EU but not US accounts as he's EU based
+- Is customer suport so allowed access
+- Can only see all 7 transactions (not restricted to failed) 
 Agent Brown:
 - Is allowed to see EU but not US accounts as he's EU based
 - Is customer suport so allowed access
@@ -316,18 +330,18 @@ Styra DAS Stacks provide a mechanism to enforce policy across multiple Systems. 
 Lets implement a Stack policy to ensure that employees can only access the system on the days they should be working.  
 
 1. Create a new `Stack`
-- Select the "+" button next to stacks and name the stack `Bank Policy`
+- Select the "+" button next to stacks and select `Istio` stack type and name it `Bank Policy`
 - Select `Add stack` to create the stack
 
 2. Configure the System mapping
-- Select selectors/selectors.rego, on the left hand side add label `system-type` and value `istio`
+- Select selectors/selectors.rego, on the left hand side add key/value label `system-type` and value `istio`
 - Select `Preview` which should show that the Stack is mapping to the `Banking App` system.
 - Select `Publish` to push the updates.
 
 3. Create a datasource
 - Select the Bank Policy Stack level and select the 3 dots icon and then `Add Data Source`
-- Set `Datasource name` as working_days and then `Save`
-- Select Create Draft Policy and then add the following Json
+- Set `Datasource name` as `working_days` and then `Save`
+- Select `Create new draft` and then add the following Json
 
 ```
 {
